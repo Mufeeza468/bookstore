@@ -43,8 +43,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function cart()
+    public function order()
     {
-        return $this->hasOne(Cart::class);
+        return $this->hasOne(Order::class);
     }
 }

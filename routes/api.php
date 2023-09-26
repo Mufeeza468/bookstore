@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookController;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DetailsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,28 +18,35 @@ use App\Http\Controllers\UserController;
 |
 */
 
+//User API
 Route::post('/login', [UserController::class, 'login']); //working
 Route::post('/register', [UserController::class, 'register']); //working
+
+//Book API
 Route::get('/books', [BookController::class, 'getBooks']); //working
 Route::get('/books/{id}', [BookController::class, 'showBooks']); //working
 
-
-
-Route::post('/detail', [DetailsController::class, 'store']);
-Route::get('/bookdetail/{id}', [DetailsController::class, 'show']);
+//Book Details API
+Route::post('/detail', [DetailsController::class, 'store']); //working
+Route::get('/bookdetail/{id}', [DetailsController::class, 'show']); //working
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::group(['middleware' => ['can:admin access']], function () {
+        //User API
         Route::get('/users', [UserController::class, 'getUsers']); //working
+        Route::get('/users/{id}', [UserController::class, 'showUsers']); //working
+        Route::delete('/users/{id}', [UserController::class, 'deleteUsers']); //working
+
+        //Book API
         Route::post('/book', [BookController::class, 'addBooks']); //working
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
     });
 
-    Route::post('/additems/{id}', [CartController::class, 'addToCart']);
+    Route::post('/additems/{id}', [OrderController::class, 'addToCart']);
     Route::post('/logout', [UserController::class, 'logout']); //working 
 
 });
