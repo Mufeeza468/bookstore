@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Details;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class DetailsController extends Controller
@@ -27,11 +28,10 @@ class DetailsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         $bookDetail = Details::create([
-            'book_id' => $request->input('book_id'),
-            'review' => $request->input('review'),
+            'book_id' => $id,
             'rating' => $request->input('rating'),
             //  'related_books' => $this->determineRelatedBooks($request->input('book_id')),
         ]);
@@ -50,23 +50,22 @@ class DetailsController extends Controller
             return response()->json(['message' => 'Book not found.'], 404);
         }
 
-        //Getting details against book_id
-        $bookDetails = Details::where('book_id', $bookId)->get();
-        if ($bookDetails->isEmpty()) {
-            return response()->json(['message' => 'No details available for this book.'], 404);
-        }
+        $reviews = Review::where('book_id', $bookId)
+            ->select('user_id', 'text') // Specify the columns you want
+            ->get();
 
-        $reviews = $bookDetails->pluck('review');
-        $ratings = $bookDetails->pluck('rating');
+
+        $rating = Details::where('book_id', $book->id)->get();
+        $avgratings = $rating->avg('rating');
 
         $relatedBooks = Book::where('author', $book->author)
             ->where('id', '<>', $bookId)
-            ->get();
+            ->pluck('title');
 
         return response()->json([
             'book_id' => $bookId,
             'reviews' => $reviews,
-            'rating' => $ratings,
+            'rating' => $avgratings,
             'related_books' => $relatedBooks,
         ]);
     }

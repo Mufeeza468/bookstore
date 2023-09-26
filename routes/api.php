@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DetailsController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -27,7 +28,8 @@ Route::get('/books', [BookController::class, 'getBooks']); //working
 Route::get('/books/{id}', [BookController::class, 'showBooks']); //working
 
 //Book Details API
-Route::post('/detail', [DetailsController::class, 'store']); //working
+
+
 Route::get('/bookdetail/{id}', [DetailsController::class, 'show']); //working
 
 
@@ -45,7 +47,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
     });
-
+    Route::post('/detail/{id}', [DetailsController::class, 'store']); //working
+    Route::post('/review/{id}', [ReviewController::class, 'addReview']);
     Route::post('/additems/{id}', [OrderController::class, 'addToCart']);
     Route::post('/logout', [UserController::class, 'logout']); //working 
 

@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('book_id');
-            $table->text('review');
             $table->float('rating');
             $table->json('related_books')->nullable();
 
