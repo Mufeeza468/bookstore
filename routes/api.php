@@ -24,8 +24,8 @@ Route::post('/login', [UserController::class, 'login']); //working
 Route::post('/register', [UserController::class, 'register']); //working
 
 //Book API
-Route::get('/books', [BookController::class, 'getBooks']); //working
-Route::get('/books/{id}', [BookController::class, 'showBooks']); //working
+Route::get('/book', [BookController::class, 'getBooks']); //working
+Route::get('/book/{id}', [BookController::class, 'showBooks']); //working
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -43,14 +43,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     //Book Details API
-    Route::post('/detail/{id}', [DetailsController::class, 'store']); //working
-    Route::get('/bookdetail/{id}', [DetailsController::class, 'show']);
+    Route::post('/detail/{id}', [DetailsController::class, 'addDetails']); //working
+    Route::get('/bookdetail/{id}', [DetailsController::class, 'showDetails']);
 
     //Review API
     Route::post('/review/{id}', [ReviewController::class, 'addReview']);
     Route::get('/review', [ReviewController::class, 'showReview']);
 
-    Route::post('/additems/{id}', [OrderController::class, 'addToCart']);
+    //Items API
+    Route::post('/create', [OrderController::class, 'store']);
+    Route::post('/item/{id}', [OrderController::class, 'addToCart']);
     Route::post('/logout', [UserController::class, 'logout']); //working 
 
 });
