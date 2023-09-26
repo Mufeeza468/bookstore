@@ -27,12 +27,6 @@ Route::post('/register', [UserController::class, 'register']); //working
 Route::get('/books', [BookController::class, 'getBooks']); //working
 Route::get('/books/{id}', [BookController::class, 'showBooks']); //working
 
-//Book Details API
-
-
-Route::get('/bookdetail/{id}', [DetailsController::class, 'show']); //working
-
-
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -47,8 +41,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
     });
+
+    //Book Details API
     Route::post('/detail/{id}', [DetailsController::class, 'store']); //working
+    Route::get('/bookdetail/{id}', [DetailsController::class, 'show']);
+
+    //Review API
     Route::post('/review/{id}', [ReviewController::class, 'addReview']);
+    Route::get('/review', [ReviewController::class, 'showReview']);
+
     Route::post('/additems/{id}', [OrderController::class, 'addToCart']);
     Route::post('/logout', [UserController::class, 'logout']); //working 
 

@@ -36,4 +36,9 @@ class ReviewController extends Controller
 
         return response()->json(['message' => 'Review created successfully'], 201);
     }
+
+    public function showReview()
+    {
+        return Review::all();
+    }
 }

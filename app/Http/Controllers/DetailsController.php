@@ -33,7 +33,7 @@ class DetailsController extends Controller
         $bookDetail = Details::create([
             'book_id' => $id,
             'rating' => $request->input('rating'),
-            //  'related_books' => $this->determineRelatedBooks($request->input('book_id')),
+
         ]);
 
         return response()->json(['book_detail' => $bookDetail]);
