@@ -4,6 +4,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -37,22 +38,29 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'deleteUsers']); //working
 
         //Book API
-        Route::post('/book', [BookController::class, 'addBooks']); //working
+        Route::post('/addbook', [BookController::class, 'addBooks']); //working
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
     });
 
     //Book Details API
     Route::post('/detail/{id}', [DetailsController::class, 'addDetails']); //working
-    Route::get('/bookdetail/{id}', [DetailsController::class, 'showDetails']);
+    Route::get('/bookdetail/{id}', [DetailsController::class, 'showDetails']); //working
 
     //Review API
-    Route::post('/review/{id}', [ReviewController::class, 'addReview']);
-    Route::get('/review', [ReviewController::class, 'showReview']);
+    Route::post('/review/{id}', [ReviewController::class, 'addReview']); //working
+    Route::get('/review', [ReviewController::class, 'showReview']); //working
 
-    //Items API
-    Route::post('/create', [OrderController::class, 'store']);
-    Route::post('/item/{id}', [OrderController::class, 'addToCart']);
+    //Order API
+    Route::post('/confirm', [OrderController::class, 'confirmOrder']); //working
+
+    //Wishlist API
+    Route::post('/wishlist/{bookId}', [WishlistController::class, 'addToList']); //working
+    Route::delete('/wishlist/{bookId}', [WishlistController::class, 'deleteInList']); //working
+    Route::get('/wishlist', [WishlistController::class, 'getList']); //working
+
+    //User API
+    Route::post('/subscribe', [UserController::class, 'subscribe']); //working
     Route::post('/logout', [UserController::class, 'logout']); //working 
 
 });

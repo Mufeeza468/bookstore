@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -107,4 +108,12 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User Deleted Successfully']);
     }
+
+    public function subscribe()
+    {
+        $user = auth()->user();
+        DB::table('users')->where('id', $user->id)->update(['subscription' => true]);
+        return response()->json(['message' => 'Subscribed successfully']);
+    }
+
 }

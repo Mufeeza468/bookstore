@@ -5,40 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Item;
 use App\Models\Order;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-
-    public function store()
-    {
-        $order = new Order([
-            'user_id' => auth()->user()->id,
-            // Get the logged-in user's ID
-            'total_amount' => 0,
-            // Set the initial total amount to 0
-            'status' => 'pending',
-        ]);
-        $order->save();
-
-        // Return the newly created order as a response
-        return response()->json(['order' => $order], 201);
-    }
     public function addToCart(Request $request, $id)
     {
-        // Get the authenticated user (assuming you have authentication set up)
         $user = auth()->user();
+        $book = Book::find($id);
 
+        // Check if user already ordered
+        $confirmedOrder = $user->order()->where('status', 'processing')->first();
+        // return $confirmedOrder;
         // Creating cart/order for user
-        if (!$user->order) {
-            $order = new Order();
-            $user->order()->save($order);
+
+        if (!$confirmedOrder) {
+            if (!$user->order) {
+                $order = new Order();
+                $user->order()->save($order);
+            } else {
+                $order = $user->order;
+            }
         } else {
-            $order = $user->order;
+            if ($user->order) {
+                $order = new Order();
+                $user->order()->save($order);
+            } else {
+                // $order = $user->order;
+            }
         }
 
-        // Find the book by ID
-        $book = Book::find($id);
+
 
         // Create a new cart item and associate it with the cart
         $item = new Item([
@@ -60,5 +58,47 @@ class OrderController extends Controller
         $order->save();
 
         return response()->json(['message' => 'Added to Cart Successfully!']);
+    }
+
+    public function confirmOrder(Request $request)
+    {
+        $bookId = $request->input('book_id');
+        $quantity = $request->input('quantity');
+
+        $book = Book::find($bookId);
+        $subtotal = $book->price * $quantity;
+
+        $user = auth()->user();
+
+        $order = new Order([
+            'user_id' => auth()->user()->id,
+            'total_amount' => $subtotal,
+            'status' => 'processing',
+        ]);
+        $order->save();
+
+        $orderItem = new Item([
+            'order_id' => $order->id,
+            'book_id' => $bookId,
+            'quantity' => $quantity,
+            'subtotal' => $subtotal,
+        ]);
+        $orderItem->save();
+
+        $totalAmount = $order->items->sum('subtotal');
+
+        // Update the total amount in the order
+        $order->total_amount = $totalAmount;
+        $order->save();
+
+        $transaction = new Transaction([
+            'user_id' => $user->id,
+            'order_id' => $order->id,
+        ]);
+        $transaction->save();
+
+        // Return a response that order was confirmed
+        return response()->json(['message' => 'Order confirmed successfully']);
+
     }
 }

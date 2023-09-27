@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('book_id');
             $table->integer('quantity');
-            $table->decimal('subtotal', 10, 2)->default(0.00);
+            $table->decimal('subtotal', 10, 2);
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
