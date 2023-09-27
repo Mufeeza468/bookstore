@@ -1,60 +1,44 @@
-Book Store
+**Bookstore Project**
 
-Requirements Gathering:
+The project aims to develop a comprehensive online bookstore platform with various features to enhance the user experience, drive sales, and manage operations efficiently.The project envisions a user-friendly and secure online bookstore that not only offers a wide range of books but also enhances the overall shopping experience through personalized recommendations, reviews, and a user-centric design. The system aims to streamline order management, maintain customer relationships. Here's a detailed summary of the project requirements:
 
-Permissions:
-Admin Access
+1. **User Registration and Login:**
 
-Controllers:
-User
-Book
-Detail (book details)
-Review
-Order
-Item (order items)
-Payment
+    - Users can create accounts using their email.
 
-Routes:
-User Registration
-User Login
-User Logout
-Add Books (Admin Only)
-Delete Book (Admin Only)
-Update Book (Admin Only)
-Add Book Details ( Review, Rating)
-Update Book Details
-Delete Book Details (Admin Only)
-Add Items to Cart
-Delete Items from Cart
-Update Items in Cart
+2. **Book Catalog and Search:**
 
-Project Setup:
-Set up Laravel project
-Install necessary dependencies (Database(MySQL/Postgres), Authentication(Sanctum))
-Estimated Time: 30 minutes
+    - A rich catalog displays books with details like title, author, cover image, description, and price.
+    - Implement a robust search functionality to help users find books quickly.
 
-User Registration and Login:
-Implement user registration with validation (Admin, Customer)
-Create registration and login functionality API’S
-Estimated Time: 30 minutes
+3. **Product Pages:**
 
-Books Catalog:
-Storing books in database
-Creating endpoints for listing and searching books
-Estimated Time: 15-20 minutes
+    - Each book has a dedicated page with comprehensive information.
+    - Features include customer reviews, ratings, related book recommendations.
 
-Books Detail/Product Pages:
-Storing details with each book in database
-Creating endpoint for getting details of each book( rating and related books)
-Estimated time: 20 minute
+4. **Shopping Cart:**
 
-Reviews:
-Storing reviews with each user id in the database.
-Create endpoints for getting reviews against each book
-Estimated time:30 minutes
+    - Users can add books to their shopping carts.
+    - Review and modify cart contents before proceeding to checkout.
 
-Shopping Cart:
-Each user has a cart against his user id.
-Items are added to cart.
-Creating an endpoint for adding items to cart.
-Estimated time: 30 minutes.
+5. **Order Management:**
+
+    - Admin dashboard to efficiently manage and track orders.
+    - Access customer details, process payments, generate invoices, and handle shipping logistics seamlessly.
+
+6. **Customer Reviews and Ratings:**
+
+    - Customers can provide feedback and ratings for books they've purchased.
+    - This feature encourages user engagement and builds trust within the community.
+
+7. **User Profile Management:**
+
+    - Users can manage profiles, view order history.
+
+8. **Wishlist and Recommendations:**
+
+    - Users can create wishlists for future book purchases.
+    - Implement a recommendation system that suggests books based on user preferences and browsing history.
+
+9. **Newsletter Subscription:**
+    - Allow customers to subscribe to a newsletter to receive updates on new book releases, promotions, and discounts, helping in customer retention and marketing efforts.
