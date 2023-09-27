@@ -41,6 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/addbook', [BookController::class, 'addBooks']); //working
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
+
+        //Order API
+        Route::get('/order', [OrderController::class, 'getOrders']);
     });
 
     //Book Details API
@@ -53,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Order API
     Route::post('/confirm', [OrderController::class, 'confirmOrder']); //working
+    Route::get('/userorder', [OrderController::class, 'userOrders']);
 
     //Wishlist API
     Route::post('/wishlist/{bookId}', [WishlistController::class, 'addToList']); //working
