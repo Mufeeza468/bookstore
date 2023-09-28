@@ -25,7 +25,7 @@ class BookController extends Controller
             'title' => 'required',
             'author' => 'required',
             'description' => 'required',
-            'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'cover_image' => 'required',
             'price' => 'required',
         ]);
 
