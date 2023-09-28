@@ -28,6 +28,9 @@ Route::post('/register', [UserController::class, 'register']); //working
 Route::get('/book', [BookController::class, 'getBooks']); //working
 Route::get('/book/{id}', [BookController::class, 'showBooks']); //working
 
+//Book Detail API
+Route::get('/bookdetail/{id}', [DetailsController::class, 'showDetails']); //working
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -48,7 +51,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Book Details API
     Route::post('/detail/{id}', [DetailsController::class, 'addDetails']); //working
-    Route::get('/bookdetail/{id}', [DetailsController::class, 'showDetails']); //working
 
     //Review API
     Route::post('/review/{id}', [ReviewController::class, 'addReview']); //working

@@ -35,7 +35,7 @@ class UserController extends Controller
             ], 500);
         }
         return response()->json([
-            'message' => 'Registeration Successfull',
+            'message' => 'Registeration Successful',
             'user' => $user,
         ], 200);
     }
@@ -69,7 +69,7 @@ class UserController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Login Successfull',
+            'message' => 'Login Successful',
             'token' => $token,
             'user' => $customUserData,
         ], 200);
@@ -81,7 +81,7 @@ class UserController extends Controller
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return response()->json(['message' => 'Logout Successfull'], 200);
+        return response()->json(['message' => 'Logout Successful'], 200);
     }
 
     public function getUsers()
