@@ -46,15 +46,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
 
         //Review API
-        Route::delete('/review/{id}', [ReviewController::class, 'deleteReviews']);
+        Route::delete('/review/{id}', [ReviewController::class, 'deleteReviews']); //working
 
         //Order API
-        Route::get('/order', [OrderController::class, 'getOrders']);
+        Route::get('/order', [OrderController::class, 'getOrders']); //working
     });
 
 
     //User API
-    Route::put('/user', [UserController::class, 'updateUsers']);
+    Route::put('/user', [UserController::class, 'updateUsers']); //working
     Route::post('/subscribe', [UserController::class, 'subscribeUsers']); //working
     Route::post('/logout', [UserController::class, 'logoutUser']); //working 
 
