@@ -45,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/book/{id}', [BookController::class, 'deleteBooks']); //working
         Route::put('/book/{id}', [BookController::class, 'updateBooks']); //working
 
+        //Review API
+        Route::delete('/review/{id}', [ReviewController::class, 'deleteReviews']);
+
         //Order API
         Route::get('/order', [OrderController::class, 'getOrders']);
     });

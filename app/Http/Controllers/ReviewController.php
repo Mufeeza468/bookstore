@@ -51,4 +51,13 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review Updated Succesfully']);
 
     }
+
+    public function deleteReviews($id, ReviewService $reviewService)
+    {
+        $response = $reviewService->delete($id);
+        if ($response === -1) {
+            return response()->json(['message' => 'Review Not Found']);
+        }
+        return response()->json(['message' => 'Review Deleted Successfully']);
+    }
 }

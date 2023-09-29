@@ -49,6 +49,11 @@ class ReviewService
 
     public function delete($id)
     {
+        $review = Review::find($id);
+        if (!$review) {
+            return -1;
+        }
+        return $review->delete();
 
     }
 
