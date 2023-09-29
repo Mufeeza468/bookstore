@@ -2,84 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddBookRequest;
+use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
+use App\Services\BookService;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function getBooks()
+
+    //Adding Book
+    public function addBooks(AddBookRequest $request, BookService $bookservice)
     {
-        $books = Book::all();
-        return response()->json(['books' => $books]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function addBooks(Request $request)
-    {
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'author' => 'required',
-            'description' => 'required',
-            'cover_image' => 'required',
-            'price' => 'required',
-        ]);
-
-        $book = Book::create($validatedData);
-
-        return response()->json(['message' => 'Book Added Successfully!']);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function showBooks($id)
-    {
-        $book = Book::find($id);
-        if (!$book) {
-            return response()->json(['message' => 'Book not found'], 404);
+        $validate = $request->validated();
+        $response = $bookservice->add($validate);
+        if (!$response) {
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 401);
         }
-        return response()->json($book);
+        return response()->json([
+            'message' => 'Book Added Successfully',
+        ], 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Book $book)
+
+    //Getting all books
+    public function getBooks(BookService $bookService)
     {
-        //
+        $response = $bookService->getAll();
+        return response()->json([
+            'books' => $response,
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function updateBooks(Request $request, $id)
+
+    //Getting a single book
+    public function showBooks($id, BookService $bookService)
     {
-        $book = Book::find($id);
-        if (!$book) {
+        $response = $bookService->show($id);
+        if (!$response) {
+            return response()->json([
+                'message' => 'Book not found',
+            ]);
+        }
+        return response()->json([
+            'book' => $response,
+        ], 200);
+    }
+
+
+    //Updating a book
+    public function updateBooks($id, UpdateBookRequest $request, BookService $bookService)
+    {
+        $validate = $request->validated();
+        $response = $bookService->update($id, $validate);
+        if ($response === -1) {
             return response()->json(['message' => 'Book Not Found']);
         }
-
-        $book->title = $request['title'];
-        $book->author = $request['author'];
-        $book->description = $request['description'];
-        $book->cover_image = $request['cover_image'];
-        $book->price = $request['price'];
-
-        $book->save();
-
         return response()->json([
             'message' => "Book Updated Successfully"
         ]);
@@ -89,14 +69,12 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function deleteBooks($id)
+    public function deleteBooks($id, BookService $bookService)
     {
-        $book = Book::find($id);
-        if (!$book) {
+        $response = $bookService->delete($id);
+        if ($response === -1) {
             return response()->json(['message' => 'Book Not Found']);
         }
-        $book->delete();
-
         return response()->json(['message' => 'Book Deleted Successfully']);
     }
 }

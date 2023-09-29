@@ -2,117 +2,136 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
+use App\Services\UserService;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
+
+
+    //User Registration
+    public function registerUsers(RegisterUserRequest $request, UserService $userService)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'confirm_password' => 'required|same:password',
-        ]);
-        $name = $request['name'];
-        $email = $request['email'];
-        $password = $request['password'];
-        $role = 'user';
-
-        $user = User::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => $password,
-            'role' => $role,
-        ]);
-
-        if (!$user) {
+        $validate = $request->validated();
+        $response = $userService->register($validate);
+        if (!$response) {
             return response()->json([
                 'message' => 'Something went wrong',
-            ], 500);
+            ], 401);
         }
+
         return response()->json([
             'message' => 'Registeration Successful',
+            'data' => $response,
+        ], 200);
+    }
+
+
+    //User Login
+    public function loginUsers(LoginUserRequest $request, UserService $userService)
+    {
+        $validate = $request->validated();
+        $response = $userService->login($validate);
+        if ($response[0] == -1) {
+            return response()->json([
+                'message' => 'Please Enter Valid Credentials',
+            ], 402);
+        }
+        $user = [
+            'id' => $response[1]->id,
+            'name' => $response[1]->name,
+            'email' => $response[1]->email,
+        ];
+        return response()->json([
+            'message' => 'Login Successful',
+            'token' => $response[0],
             'user' => $user,
         ], 200);
     }
 
-    /**
-     * Login User
-     */
-    public function login(Request $request)
+
+    //User Logout
+    public function logoutUser(UserService $userService)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
-        $email = $request['email'];
-        $password = $request['password'];
-
-        // Authenticate
-        $user = User::where('email', $email)->first();
-        if (!$user || !Hash::check($password, $user->password)) {
-            return response()->json(['message' => 'Please Enter Valid Credentials'], 401);
+        $response = $userService->logout();
+        if (!$response) {
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 401);
         }
-        // $permissionsName = $user->permissions->pluck('name');
+        return response()->json(['message' => 'Logout Successfull'], 200);
+    }
 
-        $customUserData = [
-            'id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            // 'permissions' => $permissionsName,
-        ];
 
-        $token = $user->createToken('token')->plainTextToken;
-
+    //Getting all Users
+    public function getUsers(UserService $userService)
+    {
+        $response = $userService->getAll();
         return response()->json([
-            'message' => 'Login Successful',
-            'token' => $token,
-            'user' => $customUserData,
+            'message' => 'All users Data',
+            'data' => $response,
         ], 200);
     }
 
-    /**
-     * Logout the user
-     */
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-        return response()->json(['message' => 'Logout Successful'], 200);
-    }
 
-    public function getUsers()
+    //Getting a single User
+    public function showUsers($id, UserService $userService)
     {
-        return User::all();
-    }
-
-    public function showUsers($id)
-    {
-        $user = User::find($id);
+        $user = $userService->show($id);
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json([
+                'message' => 'User not found',
+            ]);
         }
-        return response()->json($user);
+        return response()->json([
+            'message' => 'Found',
+            'data' => $user,
+        ], 200);
     }
 
-    public function deleteUsers($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json(['message' => 'User Not Found']);
-        }
-        $user->delete();
 
-        return response()->json(['message' => 'User Deleted Successfully']);
+    //User Updation
+    public function updateUsers(UpdateUserRequest $request, UserService $userService)
+    {
+        $validate = $request->validated();
+        $response = $userService->update($validate);
+        return response()->json([
+            'message' => "User Updated"
+        ]);
+
     }
 
-    public function subscribe()
+
+    //User Deletion
+    public function deleteUsers($id, UserService $userService)
     {
-        $user = auth()->user();
-        DB::table('users')->where('id', $user->id)->update(['subscription' => true]);
+        $response = $userService->delete($id);
+        if ($response == -1) {
+            return response()->json([
+                'message' => 'User not found',
+            ]);
+        }
+        return response()->json([
+            'message' => 'User Successfully Deleted',
+        ], 200);
+    }
+
+
+    //User Subscription
+    public function subscribeUsers(UserService $userService)
+    {
+        $response = $userService->subscribe();
+        if ($response == -1) {
+            return response()->json([
+                'message' => 'User is already subscribed ',
+            ]);
+        }
         return response()->json(['message' => 'Subscribed successfully']);
     }
 

@@ -21,8 +21,8 @@ use App\Http\Controllers\UserController;
 */
 
 //User API
-Route::post('/login', [UserController::class, 'login']); //working
-Route::post('/register', [UserController::class, 'register']); //working
+Route::post('/login', [UserController::class, 'loginUsers']); //working
+Route::post('/register', [UserController::class, 'registerUsers']); //working
 
 //Book API
 Route::get('/book', [BookController::class, 'getBooks']); //working
@@ -49,12 +49,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/order', [OrderController::class, 'getOrders']);
     });
 
+
+    //User API
+    Route::put('/user', [UserController::class, 'updateUsers']);
+    Route::post('/subscribe', [UserController::class, 'subscribeUsers']); //working
+    Route::post('/logout', [UserController::class, 'logoutUser']); //working 
+
     //Book Details API
     Route::post('/detail/{id}', [DetailsController::class, 'addDetails']); //working
 
     //Review API
-    Route::post('/review/{id}', [ReviewController::class, 'addReview']); //working
-    Route::get('/review', [ReviewController::class, 'showReview']); //working
+    Route::post('/review/{id}', [ReviewController::class, 'addReviews']); //working
+    Route::get('/review', [ReviewController::class, 'showReviews']); //working
+    Route::put('/review/{id}', [ReviewController::class, 'updateReviews']);
 
     //Order API
     Route::post('/confirm', [OrderController::class, 'confirmOrder']); //working
@@ -65,8 +72,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/wishlist/{bookId}', [WishlistController::class, 'deleteInList']); //working
     Route::get('/wishlist', [WishlistController::class, 'getList']); //working
 
-    //User API
-    Route::post('/subscribe', [UserController::class, 'subscribe']); //working
-    Route::post('/logout', [UserController::class, 'logout']); //working 
 
 });
