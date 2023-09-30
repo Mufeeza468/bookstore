@@ -67,13 +67,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/review/{id}', [ReviewController::class, 'updateReviews']);
 
     //Order API
-    Route::post('/confirm', [OrderController::class, 'confirmOrder']); //working
+    Route::post('/confirm', [OrderController::class, 'confirmOrders']); //working
     Route::get('/userorder', [OrderController::class, 'userOrders']);
 
     //Wishlist API
     Route::post('/wishlist/{bookId}', [WishlistController::class, 'addToList']); //working
     Route::delete('/wishlist/{bookId}', [WishlistController::class, 'deleteInList']); //working
     Route::get('/wishlist', [WishlistController::class, 'getList']); //working
-
 
 });

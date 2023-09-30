@@ -2,14 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ConfirmOrderRequest;
 use App\Models\Book;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Transaction;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function confirmOrders(ConfirmOrderRequest $request, OrderService $orderService)
+    {
+        $validate = $request->validated();
+        $response = $orderService->confirm($validate);
+        if (!$response) {
+            return response()->json(['message' => 'Something Went Wrong']);
+        }
+        return response()->json(['message' => 'Order confirmed successfully']);
+    }
+
+    public function getOrders(OrderService $orderService)
+    {
+        $response = $orderService->get();
+        return response()->json(['orders' => $response]);
+
+    }
+
+    public function userOrders(OrderService $orderService)
+    {
+        $response = $orderService->order();
+        if (!$response) {
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 401);
+        }
+        return response()->json(['orders' => $response]);
+    }
+
     // public function addToCart(Request $request, $id)
     // {
     //     $user = auth()->user();
@@ -54,62 +84,4 @@ class OrderController extends Controller
 
     //     return response()->json(['message' => 'Added to Cart Successfully!']);
     // }
-
-    public function confirmOrder(Request $request)
-    {
-        $bookId = $request->input('book_id');
-        $quantity = $request->input('quantity');
-
-        $book = Book::find($bookId);
-        $subtotal = $book->price * $quantity;
-
-        $user = auth()->user();
-
-        $order = new Order([
-            'user_id' => auth()->user()->id,
-            'total_amount' => $subtotal,
-            'status' => 'processing',
-        ]);
-        $order->save();
-
-        $orderItem = new Item([
-            'order_id' => $order->id,
-            'book_id' => $bookId,
-            'quantity' => $quantity,
-            'subtotal' => $subtotal,
-        ]);
-        $orderItem->save();
-
-        $totalAmount = $order->items->sum('subtotal');
-
-        // Update the total amount in the order
-        $order->total_amount = $totalAmount;
-        $order->save();
-
-        $transaction = new Transaction([
-            'user_id' => $user->id,
-            'order_id' => $order->id,
-        ]);
-        $transaction->save();
-
-        // Return a response that order was confirmed
-        return response()->json(['message' => 'Order confirmed successfully']);
-    }
-
-    public function getOrders()
-    {
-        $orders = Order::all();
-        return response()->json(['orders' => $orders]);
-
-    }
-
-    public function userOrders()
-    {
-        $user = auth()->user();
-
-        if ($user) {
-            $orders = Order::where('user_id', $user->id)->get();
-            return response()->json(['orders' => $orders]);
-        }
-    }
 }
