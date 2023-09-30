@@ -2,74 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddDetailRequest;
 use App\Models\Book;
 use App\Models\Details;
 use App\Models\Review;
+use App\Services\DetailService;
 use Illuminate\Http\Request;
 
 class DetailsController extends Controller
 {
 
-    public function addDetails(Request $request, $id)
+    //adding rating to a book
+    public function addDetails($id, AddDetailRequest $request, DetailService $detailService)
     {
-        $bookDetail = Details::create([
-            'book_id' => $id,
-            'rating' => $request->input('rating'),
-
-        ]);
-
-        return response()->json(['book_detail' => $bookDetail]);
+        $validate = $request->validated();
+        $response = $detailService->add($id, $validate);
+        if (!$response) {
+            return response()->json([
+                'message' => 'Something went wrong',
+            ], 401);
+        }
+        return response()->json([
+            'message' => 'Rating Added Successfully',
+        ], 200);
     }
 
-    public function showDetails($bookId)
+    //show details of a book
+    public function showDetails($bookId, DetailService $detailService)
     {
-        //Checking if book exists 
-        $book = Book::find($bookId);
-        if (!$book) {
+        $response = $detailService->show($bookId);
+
+        if ($response === -1) {
             return response()->json(['message' => 'Book not found.'], 404);
         }
-
-        $reviews = Review::where('book_id', $bookId)
-            ->select('user_id', 'text') // Specify the columns you want
-            ->get();
-
-
-        $rating = Details::where('book_id', $book->id)->get();
-        $avgratings = $rating->avg('rating');
-
-        $relatedBooks = Book::where('author', $book->author)
-            ->where('id', '<>', $bookId)
-            ->pluck('title');
-
         return response()->json([
-            'book_id' => $bookId,
-            'reviews' => $reviews,
-            'rating' => $avgratings,
-            'related_books' => $relatedBooks,
-        ]);
+            'details' => $response,
+        ], 200);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Details $details)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Details $details)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Details $details)
-    {
-        //
-    }
 }

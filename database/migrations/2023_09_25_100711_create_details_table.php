@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('book_id');
             $table->float('rating');
-            $table->json('related_books')->nullable();
 
             $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
             $table->timestamps();
