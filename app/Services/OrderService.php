@@ -42,11 +42,12 @@ class OrderService
         $order->total_amount = $totalAmount;
         $order->save();
 
-        $transaction = new Transaction([
-            'user_id' => $user->id,
-            'order_id' => $order->id,
-        ]);
-        $transaction->save();
+        // $transaction = new Transaction([
+        //     'user_id' => $user->id,
+        //     'order_id' => $order->id,
+        // ]);
+        // $transaction->save();
+
         return response();
     }
 

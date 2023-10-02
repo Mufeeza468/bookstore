@@ -39,7 +39,14 @@ class WishlistService
     public function get()
     {
         $user = auth()->user();
-        return $user->wishlist->pluck('id');
+        $wishlistItems = $user->wishlist;
+
+        $list = [];
+
+        foreach ($wishlistItems as $item) {
+            $list[] = "book_id: $item->id";
+        }
+        return $list;
     }
 
 }

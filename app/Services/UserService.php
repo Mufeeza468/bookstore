@@ -90,6 +90,10 @@ class UserService
     //User Logout
     public function logout()
     {
-        return auth()->user()->tokens()->delete();
+        $currentAccessToken = auth()->user()->currentAccessToken();
+
+        if ($currentAccessToken) {
+            return $currentAccessToken->delete();
+        }
     }
 }
