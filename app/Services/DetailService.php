@@ -37,14 +37,17 @@ class DetailService
         $rating = Details::where('book_id', $book->id)->get();
         $avgratings = $rating->avg('rating');
 
+        //Rounded the rating to 1 decimal point
+        $roundedAvgRating = round($avgratings, 1);
+
         $relatedBooks = Book::where('author', $book->author)
             ->where('id', '<>', $bookId)
-            ->pluck('title');
+            ->pluck('cover_image');
 
         return ([
             'book_id' => $bookId,
             'reviews' => $reviews,
-            'rating' => $avgratings,
+            'rating' => $roundedAvgRating,
             'related_books' => $relatedBooks,
         ]);
     }

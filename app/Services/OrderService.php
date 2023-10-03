@@ -13,13 +13,34 @@ class OrderService
 
     public function confirm(array $data)
     {
+
+        // $user = auth()->user();
+        // $totalAmount = 0;
+
+        // foreach ($data as $item) {
+        //     $bookId = $item['book_id'];
+        //     $quantity = $item['quantity'];
+
+        //     $book = Book::find($bookId);
+        //     $subtotal = $book->price * $quantity;
+
+        //     $orderItem = new Item([
+        //         'book_id' => $bookId,
+        //         'quantity' => $quantity,
+        //         'subtotal' => $subtotal,
+        //     ]);
+
+        //     $orderItem->save();
+        //     $totalAmount += $subtotal;
+        //     $user->orders()->attach($orderItem);
+        // }
+
         $bookId = $data['book_id'];
         $quantity = $data['quantity'];
 
         $book = Book::find($bookId);
         $subtotal = $book->price * $quantity;
 
-        $user = auth()->user();
 
         $order = new Order([
             'user_id' => auth()->user()->id,
@@ -41,12 +62,6 @@ class OrderService
         // Update the total amount in the order
         $order->total_amount = $totalAmount;
         $order->save();
-
-        // $transaction = new Transaction([
-        //     'user_id' => $user->id,
-        //     'order_id' => $order->id,
-        // ]);
-        // $transaction->save();
 
         return response();
     }
