@@ -14,12 +14,12 @@ class OrderController extends Controller
 {
     public function confirmOrders(ConfirmOrderRequest $request, OrderService $orderService)
     {
-        $validate = $request->validated();
-        $response = $orderService->confirm($validate);
+        $response = $orderService->confirm($request);
         if (!$response) {
             return response()->json(['message' => 'Something Went Wrong']);
         }
         return response()->json(['message' => 'Order confirmed successfully']);
+
     }
 
     public function getOrders(OrderService $orderService)

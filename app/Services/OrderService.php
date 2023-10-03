@@ -5,72 +5,69 @@ namespace App\Services;
 use App\Models\Book;
 use App\Models\Item;
 use App\Models\Order;
-use App\Models\Transaction;
+use Illuminate\Http\Request;
 
 
 class OrderService
 {
 
-    public function confirm(array $data)
+    //Confired Orders
+    public function confirm(Request $request)
     {
+        $user = auth()->user();
 
-        // $user = auth()->user();
-        // $totalAmount = 0;
-
-        // foreach ($data as $item) {
-        //     $bookId = $item['book_id'];
-        //     $quantity = $item['quantity'];
-
-        //     $book = Book::find($bookId);
-        //     $subtotal = $book->price * $quantity;
-
-        //     $orderItem = new Item([
-        //         'book_id' => $bookId,
-        //         'quantity' => $quantity,
-        //         'subtotal' => $subtotal,
-        //     ]);
-
-        //     $orderItem->save();
-        //     $totalAmount += $subtotal;
-        //     $user->orders()->attach($orderItem);
-        // }
-
-        $bookId = $data['book_id'];
-        $quantity = $data['quantity'];
-
-        $book = Book::find($bookId);
-        $subtotal = $book->price * $quantity;
-
-
+        // Create a new order
         $order = new Order([
-            'user_id' => auth()->user()->id,
-            'total_amount' => $subtotal,
+            'user_id' => $user->id,
             'status' => 'processing',
         ]);
         $order->save();
 
-        $orderItem = new Item([
-            'order_id' => $order->id,
-            'book_id' => $bookId,
-            'quantity' => $quantity,
-            'subtotal' => $subtotal,
-        ]);
-        $orderItem->save();
+        $totalAmount = 0;
 
-        $totalAmount = $order->items->sum('subtotal');
+        // Check if the request contains 'book_id' and 'quantity' arrays
+        if ($request->has('book_id') && $request->has('quantity')) {
+            $bookIds = $request->input('book_id');
+            $quantities = $request->input('quantity');
 
-        // Update the total amount in the order
-        $order->total_amount = $totalAmount;
-        $order->save();
+            // Iterate through the arrays
+            foreach ($bookIds as $index => $bookId) {
+                $quantity = $quantities[$index];
+
+                // Find the book and calculate the subtotal
+                $book = Book::find($bookId);
+                $subtotal = $book->price * $quantity;
+
+                // Create an order item
+                $orderItem = new Item([
+                    'book_id' => $bookId,
+                    'quantity' => $quantity,
+                    'subtotal' => $subtotal,
+                ]);
+
+                // Associate the order item with the order
+                $order->items()->save($orderItem);
+
+                // Update the total amount with the subtotal of this item
+                $totalAmount += $subtotal;
+            }
+
+            // Update the total amount in the order
+            $order->total_amount = $totalAmount;
+            $order->save();
+        }
 
         return response();
     }
 
+    //getting all orders
     public function get()
     {
         return Order::all();
     }
 
+
+    //getting users orders
     public function order()
     {
         $user = auth()->user();
