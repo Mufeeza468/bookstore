@@ -30,15 +30,12 @@ class OrderService
             $bookIds = $request->input('book_id');
             $quantities = $request->input('quantity');
 
-            // Iterate through the arrays
             foreach ($bookIds as $index => $bookId) {
                 $quantity = $quantities[$index];
 
-                // Find the book and calculate the subtotal
                 $book = Book::find($bookId);
                 $subtotal = $book->price * $quantity;
 
-                // Create an order item
                 $orderItem = new Item([
                     'book_id' => $bookId,
                     'quantity' => $quantity,
@@ -47,12 +44,9 @@ class OrderService
 
                 // Associate the order item with the order
                 $order->items()->save($orderItem);
-
-                // Update the total amount with the subtotal of this item
                 $totalAmount += $subtotal;
             }
 
-            // Update the total amount in the order
             $order->total_amount = $totalAmount;
             $order->save();
         }
